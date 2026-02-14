@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:app_ventas1.ViewModels" 
+             x:Class="app_ventas1.MainPage"
+             BackgroundColor="#F5F5F5"
+             Title="Ventas App">
+
+    <ContentPage.BindingContext>
+        <vm:VentasViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="*, Auto" Padding="15">
+        <CollectionView Grid.Row="0" ItemsSource="{Binding ListaProductos}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,5" Padding="10" CornerRadius="10" BackgroundColor="White">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding Nombre}" FontSize="18" FontAttributes="Bold"/>
+                                <Label Text="{Binding Marca}" TextColor="Gray"/>
+                                <Label Text="{Binding Precio, StringFormat='${0:N2}'}" TextColor="#2196F3" FontAttributes="Bold"/>
+                                <Label Text="{Binding Stock, StringFormat='Stock: {0}'}" FontSize="12" TextColor="Red"/>
+                            </VerticalStackLayout>
+                            <Entry Grid.Column="1" Text="{Binding CantidadSolicitada}" Keyboard="Numeric" WidthRequest="60" VerticalOptions="Center" BackgroundColor="#EEE"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Frame Grid.Row="1" Margin="0,10,0,0" Padding="15" CornerRadius="15" BackgroundColor="White">
+            <VerticalStackLayout Spacing="10">
+                <Button Text="Calcular Total" Command="{Binding CalcularTotalCommand}"/>
+                <Label Text="{Binding TotalPagar, StringFormat='Total: ${0:N2}'}" FontSize="22" HorizontalOptions="Center" FontAttributes="Bold"/>
+                <Button Text="PAGAR" Command="{Binding PagarCommand}" BackgroundColor="Black" TextColor="White"/>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>
