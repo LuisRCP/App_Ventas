@@ -1,13 +1,14 @@
-﻿using Newtonsoft.Json; // <--- Importante para que funcione el mapeo
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 
 namespace app_ventas1.Models
 {
-    public class Producto
+    public partial class Producto : ObservableObject
     {
         [JsonProperty("productoId")]
         public int Id { get; set; }
 
-        [JsonProperty("producto_Nombre")] // La API manda "producto_Nombre", tú usas "Nombre"
+        [JsonProperty("producto_Nombre")]
         public string Nombre { get; set; }
 
         [JsonProperty("marca_Articulo")]
@@ -22,14 +23,13 @@ namespace app_ventas1.Models
         [JsonProperty("descripcion")]
         public string Descripcion { get; set; }
 
-        [JsonProperty("imagen_url")]
-        public string ImagenUrl { get; set; } // Nuevo campo que vi en tu BD
+        [JsonProperty("imagen_Url")]
+        public string ImagenUrl { get; set; }
 
         [JsonProperty("activo")]
-        public bool Activo { get; set; } // BIT en SQL es bool en C#
+        public bool Activo { get; set; }
 
-        // Propiedad LOCAL (no va a la BD, solo para tu carrito)
-        [JsonIgnore]
-        public int CantidadSolicitada { get; set; }
+        [ObservableProperty]
+        private int cantidadSolicitada;
     }
 }

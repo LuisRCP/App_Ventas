@@ -1,40 +1,148 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:app_ventas1.ViewModels" 
+             xmlns:vm="clr-namespace:app_ventas1.ViewModels"
              x:Class="app_ventas1.MainPage"
-             BackgroundColor="#F5F5F5"
+             BackgroundColor="#F3F4F6"
              Title="Ventas App">
 
     <ContentPage.BindingContext>
         <vm:VentasViewModel />
     </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="*, Auto" Padding="15">
-        <CollectionView Grid.Row="0" ItemsSource="{Binding ListaProductos}">
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- LISTA DE PRODUCTOS -->
+        <CollectionView ItemsSource="{Binding ListaProductos}"
+                        Margin="12"
+                        SelectionMode="None">
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="10" CornerRadius="10" BackgroundColor="White">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <VerticalStackLayout Grid.Column="0">
-                                <Label Text="{Binding Nombre}" FontSize="18" FontAttributes="Bold"/>
-                                <Label Text="{Binding Marca}" TextColor="Gray"/>
-                                <Label Text="{Binding Precio, StringFormat='${0:N2}'}" TextColor="#2196F3" FontAttributes="Bold"/>
-                                <Label Text="{Binding Stock, StringFormat='Stock: {0}'}" FontSize="12" TextColor="Red"/>
+                    <Frame Padding="15"
+                           Margin="0,8"
+                           CornerRadius="20"
+                           HasShadow="True"
+                           BackgroundColor="White">
+
+                        <Grid ColumnDefinitions="90,*,Auto"
+                              ColumnSpacing="12">
+
+                            <!-- IMAGEN -->
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="#F9FAFB"
+                                   CornerRadius="15"
+                                   Padding="8"
+                                   HasShadow="False">
+                                <Image Source="{Binding ImagenUrl}"
+                                       Aspect="AspectFit"
+                                       HeightRequest="80"
+                                       WidthRequest="80"/>
+                            </Frame>
+
+                            <!-- INFO -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center"
+                                                 Spacing="4">
+
+                                <Label Text="{Binding Nombre}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       LineBreakMode="TailTruncation"/>
+
+                                <Label Text="{Binding Marca}"
+                                       FontSize="13"
+                                       TextColor="#6B7280"/>
+
+                                <Label Text="{Binding Precio, StringFormat='${0:N2}'}"
+                                       FontSize="17"
+                                       FontAttributes="Bold"
+                                       TextColor="#2563EB"/>
+
+                                <Label Text="{Binding Stock, StringFormat='Stock: {0}'}"
+                                       FontSize="12"
+                                       TextColor="#EF4444"/>
                             </VerticalStackLayout>
-                            <Entry Grid.Column="1" Text="{Binding CantidadSolicitada}" Keyboard="Numeric" WidthRequest="60" VerticalOptions="Center" BackgroundColor="#EEE"/>
+
+                            <!-- CONTROL CANTIDAD -->
+                            <VerticalStackLayout Grid.Column="2"
+                                                 VerticalOptions="Center"
+                                                 Spacing="6">
+
+                                <!-- BOTÓN + -->
+                                <Button Text="+"
+                                        FontSize="18"
+                                        HeightRequest="35"
+                                        WidthRequest="35"
+                                        CornerRadius="10"
+                                        BackgroundColor="#2563EB"
+                                        TextColor="White"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VentasViewModel}}, Path=IncrementarCommand}"
+                                        CommandParameter="{Binding .}" />
+
+                                <!-- CANTIDAD -->
+                                <Label Text="{Binding CantidadSolicitada}"
+                                       HorizontalOptions="Center"
+                                       FontAttributes="Bold"
+                                       FontSize="16"/>
+
+                                <!-- BOTÓN - -->
+                                <Button Text="−"
+                                        FontSize="18"
+                                        HeightRequest="35"
+                                        WidthRequest="35"
+                                        CornerRadius="10"
+                                        BackgroundColor="#2563EB"
+                                        TextColor="White"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VentasViewModel}}, Path=DecrementarCommand}"
+                                        CommandParameter="{Binding .}" />
+
+                            </VerticalStackLayout>
+
                         </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Frame Grid.Row="1" Margin="0,10,0,0" Padding="15" CornerRadius="15" BackgroundColor="White">
-            <VerticalStackLayout Spacing="10">
-                <Button Text="Calcular Total" Command="{Binding CalcularTotalCommand}"/>
-                <Label Text="{Binding TotalPagar, StringFormat='Total: ${0:N2}'}" FontSize="22" HorizontalOptions="Center" FontAttributes="Bold"/>
-                <Button Text="PAGAR" Command="{Binding PagarCommand}" BackgroundColor="Black" TextColor="White"/>
+        <!-- FOOTER TOTAL -->
+        <Frame Grid.Row="1"
+               Margin="12"
+               Padding="20"
+               CornerRadius="25"
+               BackgroundColor="White"
+               HasShadow="True">
+
+            <VerticalStackLayout Spacing="15">
+
+                <Label Text="{Binding TotalPagar, StringFormat='Total: ${0:N2}'}"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="#111827"/>
+
+                <Button Text="PAGAR"
+                        Command="{Binding PagarCommand}"
+                        HeightRequest="55"
+                        CornerRadius="18"
+                        FontSize="18"
+                        BackgroundColor="#111827"
+                        TextColor="White">
+
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding TotalPagar}"
+                                     Value="0">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="BackgroundColor" Value="#9CA3AF"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+
+                </Button>
+
             </VerticalStackLayout>
         </Frame>
+
     </Grid>
+
 </ContentPage>

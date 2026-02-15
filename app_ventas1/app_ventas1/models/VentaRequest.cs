@@ -2,29 +2,24 @@
 
 namespace app_ventas1.Models
 {
-    // Clase principal de la venta (Cabecera)
     public class VentaRequest
     {
-        [JsonProperty("total")]
-        public decimal Total { get; set; }
+        [JsonProperty("metodo_Pago")]
+        public string MetodoPago { get; set; } = "Efectivo";
 
-        [JsonProperty("metodo_pago")]
-        public string MetodoPago { get; set; } = "Efectivo"; // Valor por defecto
+        [JsonProperty("estado")]
+        public string Estado { get; set; } = "PAGADA";
 
-        [JsonProperty("detalles")]
-        public List<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
+        [JsonProperty("ventaDetalles")]
+        public List<VentaDetalleRequest> VentaDetalles { get; set; } = new();
     }
 
-    // Clase para los renglones de la venta (Detalle)
-    public class VentaDetalle
+    public class VentaDetalleRequest
     {
         [JsonProperty("productoId")]
         public int ProductoId { get; set; }
 
         [JsonProperty("cantidad")]
         public int Cantidad { get; set; }
-
-        [JsonProperty("precio_unitario")]
-        public decimal PrecioUnitario { get; set; }
     }
 }

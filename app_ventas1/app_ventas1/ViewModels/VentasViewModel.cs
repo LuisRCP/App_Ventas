@@ -1,14 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input; // Esto arregla el RelayCommand
+using CommunityToolkit.Mvvm.Input;
 using app_ventas1.Models;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using app_ventas1.Services;
 
 namespace app_ventas1.ViewModels
 {
-    // OJO: Debe decir "partial class" para que funcione el Toolkit
     public partial class VentasViewModel : ObservableObject
     {
+        private readonly ApiService _apiService = new();
         [ObservableProperty]
         private ObservableCollection<Producto> listaProductos;
 
@@ -18,18 +18,61 @@ namespace app_ventas1.ViewModels
         public VentasViewModel()
         {
             ListaProductos = new ObservableCollection<Producto>();
-            CargarDatosDePrueba();
+            _ = CargarProductos();
         }
 
-        private void CargarDatosDePrueba()
+        private async Task CargarProductos()
         {
-            // Datos simulados
-            ListaProductos.Add(new Producto { Id = 1, Nombre = "iPhone 15", Marca = "Apple", Precio = 20000, Stock = 5, Descripcion = "256GB" });
-            ListaProductos.Add(new Producto { Id = 2, Nombre = "Galaxy S24", Marca = "Samsung", Precio = 18000, Stock = 8, Descripcion = "Ultra HD" });
-            ListaProductos.Add(new Producto { Id = 3, Nombre = "Laptop Asus", Marca = "Asus", Precio = 15000, Stock = 3, Descripcion = "i7 16GB RAM" });
-            ListaProductos.Add(new Producto { Id = 3, Nombre = "Laptop Victus", Marca = "HP", Precio = 12000, Stock = 10, Descripcion = "i9 32GB RAM" });
-            ListaProductos.Add(new Producto { Id = 3, Nombre = "Google Pixel", Marca = "Google", Precio = 23000, Stock = 2, Descripcion = "120GB 12 RAM" });
-            ListaProductos.Add(new Producto { Id = 3, Nombre = "Pc Gaming", Marca = "Xtrem", Precio = 22000, Stock = 4, Descripcion = "i9-13 1TB 64 RAM" });
+            try
+            {
+                var productos = await _apiService.GetProductosAsync();
+
+                ListaProductos.Clear();
+
+                foreach (var p in productos)
+                {
+                    p.PropertyChanged += (_, __) => RecalcularTotal();
+                    ListaProductos.Add(p);
+                }
+
+                RecalcularTotal();
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+            }
+        }
+
+        [RelayCommand]
+        private void Incrementar(Producto producto)
+        {
+            if (producto.CantidadSolicitada < producto.Stock)
+                producto.CantidadSolicitada++;
+        }
+
+        [RelayCommand]
+        private void Decrementar(Producto producto)
+        {
+            if (producto.CantidadSolicitada > 0)
+                producto.CantidadSolicitada--;
+        }
+
+        private void RecalcularTotal()
+        {
+            decimal suma = 0;
+
+            foreach (var prod in ListaProductos)
+            {
+                if (prod.CantidadSolicitada > prod.Stock)
+                    prod.CantidadSolicitada = prod.Stock;
+
+                if (prod.CantidadSolicitada < 0)
+                    prod.CantidadSolicitada = 0;
+
+                suma += prod.Precio * prod.CantidadSolicitada;
+            }
+
+            TotalPagar = suma;
         }
 
         [RelayCommand]
@@ -49,36 +92,48 @@ namespace app_ventas1.ViewModels
         [RelayCommand]
         public async Task Pagar()
         {
-            if (TotalPagar <= 0)
+            var venta = new VentaRequest
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Selecciona productos primero", "OK");
-                return;
-            }
-
-            // Crear el objeto de venta
-            var nuevaVenta = new VentaRequest
-            {
-                Total = TotalPagar,
                 MetodoPago = "Efectivo",
-                Detalles = new List<VentaDetalle>()
+                Estado = "PAGADA"
             };
 
             foreach (var prod in ListaProductos)
             {
                 if (prod.CantidadSolicitada > 0)
                 {
-                    nuevaVenta.Detalles.Add(new VentaDetalle
+                    venta.VentaDetalles.Add(new VentaDetalleRequest
                     {
                         ProductoId = prod.Id,
-                        Cantidad = prod.CantidadSolicitada,
-                        PrecioUnitario = prod.Precio
+                        Cantidad = prod.CantidadSolicitada
                     });
                 }
             }
 
-            // Simular envío
-            string json = JsonConvert.SerializeObject(nuevaVenta);
-            await App.Current.MainPage.DisplayAlert("Éxito", $"JSON Generado:\n{json}", "OK");
+            if (!venta.VentaDetalles.Any())
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Selecciona productos primero", "OK");
+                return;
+            }
+
+            var resultado = await _apiService.RegistrarVentaAsync(venta);
+
+            if (resultado)
+            {
+                await App.Current.MainPage.DisplayAlert("Éxito", "Venta registrada correctamente", "OK");
+
+                foreach (var prod in ListaProductos)
+                    prod.CantidadSolicitada = 0;
+
+                TotalPagar = 0;
+
+                ListaProductos.Clear();
+                CargarProductos();
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "No se pudo registrar la venta", "OK");
+            }
         }
     }
 }
