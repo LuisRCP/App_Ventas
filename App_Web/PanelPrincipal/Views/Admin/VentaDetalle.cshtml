@@ -1,0 +1,50 @@
+﻿@model PanelPrincipal.Models.Venta
+
+@{
+    ViewData["Title"] = "Detalle de Venta";
+}
+
+<h2>Detalle de Venta #@Model.VentaId</h2>
+
+<div class="card-custom mb-4">
+    <p><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy HH:mm")</p>
+    <p><strong>Método de Pago:</strong> @Model.Metodo_Pago</p>
+    <p>
+        <strong>Estado:</strong>
+        @if (Model.Estado == "PAGADA")
+        {
+            <span class="badge bg-success">Pagada</span>
+        }
+        else
+        {
+            <span class="badge bg-warning text-dark">@Model.Estado</span>
+        }
+    </p>
+    <p><strong>Total:</strong> $@Model.Total</p>
+</div>
+
+<h4>Productos</h4>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.VentaDetalles)
+        {
+            <tr>
+                <td>@item.Producto?.Producto_Nombre</td>
+                <td>@item.Cantidad</td>
+                <td>$@item.Precio_Unitario</td>
+                <td>$@(item.Cantidad* item.Precio_Unitario)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Ventas" class="btn btn-secondary">Volver</a>

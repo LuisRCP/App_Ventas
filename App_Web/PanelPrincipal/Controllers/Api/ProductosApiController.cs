@@ -1,25 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PanelPrincipal.Data;
 
-[Route("api/productos")]
-[ApiController]
-public class ProductosApiController : ControllerBase
+namespace PanelPrincipal.Controllers.Api
 {
-    private readonly TiendaDbContext _context;
-
-    public ProductosApiController(TiendaDbContext context)
+    [Route("api/productos")]
+    [ApiController]
+    public class ProductosApiController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly TiendaDbContext _context;
 
-    // GET: api/productos
-    [HttpGet]
-    public async Task<IActionResult> GetProductos()
-    {
-        var productos = await _context.Productos
-            .Where(p => p.Activo && p.Cantidad_Stock > 0)
-            .ToListAsync();
+        public ProductosApiController(TiendaDbContext context)
+        {
+            _context = context;
+        }
 
-        return Ok(productos);
+        // GET: api/productos
+        [HttpGet]
+        public async Task<IActionResult> GetProductos()
+        {
+            var productos = await _context.Productos
+                .Where(p => p.Activo && p.Cantidad_Stock > 0)
+                .ToListAsync();
+
+            return Ok(productos);
+        }
     }
 }

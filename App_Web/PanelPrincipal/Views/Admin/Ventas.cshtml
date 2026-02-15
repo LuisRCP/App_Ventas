@@ -1,0 +1,46 @@
+﻿@model IEnumerable<PanelPrincipal.Models.Venta>
+
+@{
+    ViewData["Title"] = "Historial de Ventas";
+}
+
+<h2>Historial de Ventas</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Método Pago</th>
+            <th>Estado</th>
+            <th>Detalle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var venta in Model)
+        {
+            <tr>
+                <td>@venta.VentaId</td>
+                <td>@venta.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>$ @venta.Total</td>
+                <td>@venta.Metodo_Pago</td>
+                <td>
+                    @if (venta.Estado == "PAGADA")
+                    {
+                        <span class="badge bg-success">Pagada</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">@venta.Estado</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="VentaDetalle" asp-route-id="@venta.VentaId" class="btn btn-sm btn-primary">
+                        Ver
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

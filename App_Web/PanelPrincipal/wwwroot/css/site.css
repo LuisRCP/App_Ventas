@@ -1,0 +1,159 @@
+/* ===============================
+   GLOBAL
+================================= */
+
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2, h3, h4 {
+    font-weight: 600;
+}
+
+/* ===============================
+   SIDEBAR
+================================= */
+
+.sidebar {
+    height: 100vh;
+    width: 240px;
+    position: fixed;
+    background: linear-gradient(180deg, #1f2937, #111827);
+    color: white;
+    padding-top: 20px;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+    .sidebar h4 {
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .sidebar a {
+        color: #cbd5e1;
+        text-decoration: none;
+        display: block;
+        padding: 12px 20px;
+        font-size: 15px;
+        transition: all 0.2s ease;
+    }
+
+        .sidebar a:hover {
+            background-color: #2563eb;
+            color: white;
+            padding-left: 25px;
+        }
+
+/* ===============================
+   CONTENT AREA
+================================= */
+
+.content {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+/* ===============================
+   NAVBAR
+================================= */
+
+.navbar-custom {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
+   TABLES
+================================= */
+
+.table {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+    .table thead {
+        background-color: #111827;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f5f9;
+    }
+
+/* ===============================
+   BUTTONS
+================================= */
+
+.btn {
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+    }
+
+.btn-warning {
+    background-color: #f59e0b;
+    border: none;
+}
+
+    .btn-warning:hover {
+        background-color: #d97706;
+    }
+
+.btn-danger {
+    background-color: #ef4444;
+    border: none;
+}
+
+    .btn-danger:hover {
+        background-color: #dc2626;
+    }
+
+/* ===============================
+   BADGES
+================================= */
+
+.badge {
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.bg-success {
+    background-color: #16a34a !important;
+}
+
+.bg-danger {
+    background-color: #dc2626 !important;
+}
+
+/* ===============================
+   CARDS (para dashboard)
+================================= */
+
+.card-custom {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+    .card-custom:hover {
+        transform: translateY(-3px);
+    }

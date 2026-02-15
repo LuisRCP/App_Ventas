@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Panel Admin</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h4 class="text-center py-3">🛒 Admin</h4>
+        <a asp-controller="Admin" asp-action="Index">Dashboard</a>
+        <a asp-controller="Productos" asp-action="Index">Productos</a>
+        <a asp-controller="Admin" asp-action="Ventas">Ventas</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- TOP NAV -->
+        <nav class="navbar navbar-expand navbar-custom mb-4">
+            <div class="container-fluid">
+                <span class="navbar-brand mb-0 h5">
+                    @ViewData["Title"]
+                </span>
+            </div>
+        </nav>
+
+        <main>
+            @RenderBody()
+        </main>
+
+        <footer class="mt-5 text-center text-muted">
+            <hr />
+            &copy; 2026 - Panel Administrativo
+        </footer>
+
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

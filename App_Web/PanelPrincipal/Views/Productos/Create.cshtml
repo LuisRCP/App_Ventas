@@ -1,0 +1,56 @@
+﻿@model PanelPrincipal.Models.Producto
+
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<h2>Crear Producto</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Producto_Nombre"></label>
+        <input asp-for="Producto_Nombre" class="form-control" />
+        <span asp-validation-for="Producto_Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Marca_Articulo"></label>
+        <input asp-for="Marca_Articulo" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Precio"></label>
+        <input asp-for="Precio" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cantidad_Stock"></label>
+        <input asp-for="Cantidad_Stock" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Descripcion"></label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Imagen_Url"></label>
+        <input asp-for="Imagen_Url" class="form-control" />
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="Activo" class="form-check-input" />
+        <label asp-for="Activo" class="form-check-label"></label>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,44 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PanelPrincipal.Data;
+using PanelPrincipal.Models;
 
-[Route("api/ventas")]
-[ApiController]
-public class VentasApiController : ControllerBase
+namespace PanelPrincipal.Controllers.Api
 {
-    private readonly TiendaDbContext _context;
-
-    public VentasApiController(TiendaDbContext context)
+    [Route("api/ventas")]
+    [ApiController]
+    public class VentasApiController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly TiendaDbContext _context;
 
-    [HttpPost]
-    public async Task<IActionResult> RegistrarVenta([FromBody] Venta venta)
-    {
-        if (venta == null || venta.VentaDetalles == null)
-            return BadRequest();
-
-        decimal total = 0;
-
-        foreach (var detalle in venta.VentaDetalles)
+        public VentasApiController(TiendaDbContext context)
         {
-            var producto = await _context.Productos.FindAsync(detalle.ProductoId);
-
-            if (producto == null || producto.Cantidad_Stock < detalle.Cantidad)
-                return BadRequest("Stock insuficiente");
-
-            producto.Cantidad_Stock -= detalle.Cantidad;
-            detalle.Precio_Unitario = producto.Precio;
-
-            total += detalle.Cantidad * producto.Precio;
+            _context = context;
         }
 
-        venta.Total = total;
-        venta.Fecha = DateTime.Now;
+        [HttpPost]
+        public async Task<IActionResult> RegistrarVenta([FromBody] Venta venta)
+        {
+            if (venta == null || venta.VentaDetalles == null)
+                return BadRequest();
 
-        _context.Ventas.Add(venta);
-        await _context.SaveChangesAsync();
+            decimal total = 0;
 
-        return Ok(new { mensaje = "Venta registrada correctamente" });
+            foreach (var detalle in venta.VentaDetalles)
+            {
+                var producto = await _context.Productos.FindAsync(detalle.ProductoId);
+
+                if (producto == null || producto.Cantidad_Stock < detalle.Cantidad)
+                    return BadRequest("Stock insuficiente");
+
+                producto.Cantidad_Stock -= detalle.Cantidad;
+                detalle.Precio_Unitario = producto.Precio;
+
+                total += detalle.Cantidad * producto.Precio;
+            }
+
+            venta.Total = total;
+            venta.Fecha = DateTime.Now;
+
+            _context.Ventas.Add(venta);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { mensaje = "Venta registrada correctamente" });
+        }
     }
 }
